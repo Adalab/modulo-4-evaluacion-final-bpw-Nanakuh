@@ -2,6 +2,23 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
+const mysql = require("mysql2/promise");
+
+// ---------- CONFIGURACIÓN MYSQL ----------
+
+const getConnection = async () => {
+  const connection = await mysql.createConnection({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_SCHEMA,
+    port: process.env.MYSQL_PORT,
+  });
+
+  await connection.connect();
+
+  return connection;
+};
 
 // ---------- CREAR VARIABLES ----------
 
