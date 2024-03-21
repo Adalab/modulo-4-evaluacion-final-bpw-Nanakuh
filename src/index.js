@@ -39,7 +39,49 @@ app.listen(port, () => {
 // ---------- ENDPOINTS ----------
 
 app.get("/api/recetas", async (req, res) => {});
-app.get("/api/recetas/:id", async (req, res) => {});
+
+// Endpoint para obtener una receta por su ID
+app.get("/api/recetas/:id", async (req, res) => {
+  const { id } = req.params;
+
+  // Validaciones
+  if (!id || isNaN(Number(id))) {
+    return res.status(400).json({
+      success: false,
+      message: "Ha ocurrido un error",
+    });
+  }
+
+  try {
+    const conn = await getConnection();
+
+    // Obtener la receta por su ID
+    const [receta] = await conn.query("SELECT * FROM recetas WHERE id = ?", [
+      id,
+    ]);
+
+    if (receta.length === 0) {
+      res.status(404).json({ message: "Receta no encontrada" });
+    }
+
+    // Obtener los ingredientes de la receta
+    const [ingredientes] = await conn.query(
+      "SELECT nombre, cantidad FROM ingredientes WHERE receta_id = ?",
+      [id]
+    );
+
+    // Cerrar la conexión
+    await conn.end();
+
+    // Devolver los datos de la receta e ingredientes
+    res.json({ receta: receta[0], ingredientes });
+  } catch (error) {
+    console.error("Error al obtener la receta:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error al procesar la solicitud" });
+  }
+});
 app.post("/api/recetas", async (req, res) => {});
 app.put("/api/recetas", async (req, res) => {});
 app.delete("/api/recetas/:id", async (req, res) => {});
