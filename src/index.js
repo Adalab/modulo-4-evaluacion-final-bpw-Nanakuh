@@ -38,7 +38,44 @@ app.listen(port, () => {
 
 // ---------- ENDPOINTS ----------
 
-app.get("/api/recetas", async (req, res) => {});
+// Endpoint para obtener todas las recetas
+app.get("/api/recetas", async (req, res) => {
+  try {
+    const conn = await getConnection();
+
+    // Obtener todas las recetas
+    const [recetas] = await conn.query("SELECT * FROM recetas");
+
+    if (recetas.length === 0) {
+      return res.status(404).json({ message: "No se encontraron recetas" });
+    }
+
+    // Obtener todos los ingredientes
+    const [ingredientes] = await conn.query("SELECT * FROM ingredientes");
+
+    // Cerrar la conexión
+    await conn.end();
+
+    // Agrupar los ingredientes por receta
+    const recetasConIngredientes = recetas.map((receta) => {
+      const ingredientesDeReceta = ingredientes.filter(
+        (ingrediente) => ingrediente.receta_id === receta.id
+      );
+      return { ...receta, ingredientes: ingredientesDeReceta };
+    });
+
+    // Devolver los datos de las recetas e ingredientes
+    res.json({
+      info: { count: recetasConIngredientes.length },
+      results: recetasConIngredientes,
+    });
+  } catch (error) {
+    console.error("Error al obtener las recetas:", error);
+    res
+      .status(500)
+      .json({ success: false, message: "Error al procesar la solicitud" });
+  }
+});
 
 // Endpoint para obtener una receta por su ID
 app.get("/api/recetas/:id", async (req, res) => {
