@@ -95,7 +95,6 @@ app.get("/api/recetas/:id", async (req, res) => {
 
     if (receta.length === 0) {
       return res.sendStatus(404);
-     
     }
     // Obtener los ingredientes de la receta
     const [ingredientes] = await conn.query(
@@ -159,7 +158,57 @@ app.post("/api/recetas", async (req, res) => {
     });
   }
 });
-app.put("/api/recetas", async (req, res) => {});
+
+// Endpoint para actualizar una receta y sus ingredientes
+app.put("/api/recetas/:id", async (req, res) => {
+  const { id } = req.params;
+  const { nombre, instrucciones, imagen, ingredientes } = req.body;
+
+  if (
+    !id ||
+    !nombre ||
+    !instrucciones ||
+    !imagen ||
+    !Array.isArray(ingredientes)
+  ) {
+    return res.status(400).json({
+      success: false,
+      message: "Ha ocurrido un error",
+    });
+  }
+
+  try {
+    const conn = await getConnection();
+
+    await conn.query(
+      "UPDATE recetas SET nombre = ?, instrucciones = ?, imagen = ? WHERE id = ?",
+      [nombre, instrucciones, imagen, id]
+    );
+
+    await conn.query("DELETE FROM ingredientes WHERE receta_id = ?", [id]);
+
+    for (const ingrediente of ingredientes) {
+      await conn.query(
+        "INSERT INTO ingredientes (receta_id, nombre, cantidad) VALUES (?, ?, ?)",
+        [id, ingrediente.nombre, ingrediente.cantidad]
+      );
+    }
+
+    await conn.end();
+
+    res.json({
+      success: true,
+      message: "Receta actualizada con éxito",
+      id: id,
+    });
+  } catch (error) {
+    console.error("Error al actualizar la receta y sus ingredientes:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error al procesar la solicitud.",
+    });
+  }
+});
 
 // Endpoint para obtener eliminar una receta y sus ingredientes en base a su id
 app.delete("/api/recetas/:id", async (req, res) => {
