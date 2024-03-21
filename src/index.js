@@ -115,7 +115,50 @@ app.get("/api/recetas/:id", async (req, res) => {
       .json({ success: false, message: "Error al procesar la solicitud" });
   }
 });
-app.post("/api/recetas", async (req, res) => {});
+
+// Endpoint para crear una receta con sus ingredientes
+app.post("/api/recetas", async (req, res) => {
+  const { nombre, instrucciones, imagen, ingredientes } = req.body;
+
+  if (!nombre || !instrucciones || !imagen || !Array.isArray(ingredientes)) {
+    return res.status(400).json({
+      success: false,
+      message: "Ha ocurrido un error",
+    });
+  }
+
+  try {
+    const conn = await getConnection();
+
+    const [insertResult] = await conn.query(
+      "INSERT INTO recetas (nombre, instrucciones, imagen) VALUES (?, ?, ?)",
+      [nombre, instrucciones, imagen]
+    );
+
+    const recetaId = insertResult.insertId;
+
+    for (const ingrediente of ingredientes) {
+      await conn.query(
+        "INSERT INTO ingredientes (receta_id, nombre, cantidad) VALUES (?, ?, ?)",
+        [recetaId, ingrediente.nombre, ingrediente.cantidad]
+      );
+    }
+
+    await conn.end();
+
+    res.json({
+      success: true,
+      message: "Receta creada con éxito",
+      id: recetaId,
+    });
+  } catch (error) {
+    console.error("Error al crear la receta:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error al crear la receta",
+    });
+  }
+});
 app.put("/api/recetas", async (req, res) => {});
 
 // Endpoint para obtener eliminar una receta y sus ingredientes en base a su id
