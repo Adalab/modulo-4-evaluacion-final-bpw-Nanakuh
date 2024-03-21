@@ -46,10 +46,6 @@ app.get("/api/recetas", async (req, res) => {
     // Obtener todas las recetas
     const [recetas] = await conn.query("SELECT * FROM recetas");
 
-    if (recetas.length === 0) {
-      return res.status(404).json({ message: "No se encontraron recetas" });
-    }
-
     // Obtener todos los ingredientes
     const [ingredientes] = await conn.query("SELECT * FROM ingredientes");
 
@@ -98,9 +94,9 @@ app.get("/api/recetas/:id", async (req, res) => {
     ]);
 
     if (receta.length === 0) {
-      res.status(404).json({ message: "Receta no encontrada" });
+      return res.sendStatus(404);
+     
     }
-
     // Obtener los ingredientes de la receta
     const [ingredientes] = await conn.query(
       "SELECT nombre, cantidad FROM ingredientes WHERE receta_id = ?",
@@ -111,7 +107,7 @@ app.get("/api/recetas/:id", async (req, res) => {
     await conn.end();
 
     // Devolver los datos de la receta e ingredientes
-    res.json({ receta: receta[0], ingredientes });
+    res.json({ ...receta[0], ingredientes });
   } catch (error) {
     console.error("Error al obtener la receta:", error);
     res
@@ -121,4 +117,38 @@ app.get("/api/recetas/:id", async (req, res) => {
 });
 app.post("/api/recetas", async (req, res) => {});
 app.put("/api/recetas", async (req, res) => {});
-app.delete("/api/recetas/:id", async (req, res) => {});
+
+// Endpoint para obtener eliminar una receta y sus ingredientes en base a su id
+app.delete("/api/recetas/:id", async (req, res) => {
+  const { id } = req.params;
+
+  // Verificar que el id está definido y es un número
+  if (!id || isNaN(Number(id))) {
+    return res.status(400).json({
+      success: false,
+      message: "Ha ocurrido un error",
+    });
+  }
+
+  try {
+    const conn = await getConnection();
+
+    // Eliminar la receta por su ID
+    await conn.query("DELETE FROM recetas WHERE id = ?", [id]);
+
+    // Cerrar la conexión
+    await conn.end();
+
+    // Devolver una respuesta exitosa
+    res.json({
+      success: true,
+      message: `Se ha eliminado la receta con id=${id}`,
+    });
+  } catch (error) {
+    console.error("Error al eliminar la receta:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error al procesar la solicitud",
+    });
+  }
+});
