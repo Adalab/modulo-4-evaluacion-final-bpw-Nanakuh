@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Esta API permite gestionar recetas y sus ingredientes. 
+Esta API permite gestionar recetas y sus ingredientes.
 Puedes acceder a ella a través de esta dirección:
 https://modulo-4-evaluacion-final-bpw-nanakuh.onrender.com/
 
@@ -127,31 +127,31 @@ A continuación, se detallan los endpoints disponibles:
 - **Cuerpo de la solicitud:**
   ```json
   {
-  "nombre": "Tarta de manzana actualizada",
-  "instrucciones": "1. Precalentar el horno a 180°C. 2. Pelar las manzanas y cortarlas en láminas. 3. En un bol grande, mezclar las manzanas con azúcar, canela y un poco de harina. 4. Extender la masa de tarta en un molde y verter la mezcla de manzanas encima. 5. Cubrir con otra capa de masa de tarta y sellar los bordes. 6. Hornear durante 45-50 minutos o hasta que esté dorada.",
-  "imagen": "url-de-la-imagen-de-la-tarta-actualizada.jpg",
-  "ingredientes": [
-    {
-      "nombre": "Manzana",
-      "cantidad": "5 unidades"
-    },
-    {
-      "nombre": "Azúcar",
-      "cantidad": "150 gr"
-    },
-    {
-      "nombre": "Canela",
-      "cantidad": "2 cucharaditas"
-    },
-    {
-      "nombre": "Harina",
-      "cantidad": "50 gr"
-    },
-    {
-      "nombre": "Masa de tarta",
-      "cantidad": "2 unidades"
-    }
-  ]
+    "nombre": "Tarta de manzana actualizada",
+    "instrucciones": "1. Precalentar el horno a 180°C. 2. Pelar las manzanas y cortarlas en láminas. 3. En un bol grande, mezclar las manzanas con azúcar, canela y un poco de harina. 4. Extender la masa de tarta en un molde y verter la mezcla de manzanas encima. 5. Cubrir con otra capa de masa de tarta y sellar los bordes. 6. Hornear durante 45-50 minutos o hasta que esté dorada.",
+    "imagen": "url-de-la-imagen-de-la-tarta-actualizada.jpg",
+    "ingredientes": [
+      {
+        "nombre": "Manzana",
+        "cantidad": "5 unidades"
+      },
+      {
+        "nombre": "Azúcar",
+        "cantidad": "150 gr"
+      },
+      {
+        "nombre": "Canela",
+        "cantidad": "2 cucharaditas"
+      },
+      {
+        "nombre": "Harina",
+        "cantidad": "50 gr"
+      },
+      {
+        "nombre": "Masa de tarta",
+        "cantidad": "2 unidades"
+      }
+    ]
   }
   ```
 - **Respuesta:**
@@ -169,9 +169,22 @@ A continuación, se detallan los endpoints disponibles:
 - **Descripción:** Elimina una receta y todos sus ingredientes basado en el ID proporcionado.
 - **Parámetros:** `id` (en la ruta)
 - **Respuesta:**
+
   ```json
   {
     "success": true,
     "message": "Receta eliminada correctamente"
   }
   ```
+
+  Espero que te haya sido útil este README.
+  
+  Si tienes alguna sugerencia, no dudes en contactar conmigo 🙂:
+
+  email: anagilrodrig@gmail.com
+
+  linkedin: https://www.linkedin.com/in/ana-maria-gil-rod/
+
+  github: https://github.com/Nanakuh
+
+  Authors @Nanakuh
