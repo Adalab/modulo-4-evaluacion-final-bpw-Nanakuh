@@ -2,7 +2,11 @@
 
 ## Descripción
 
-Esta API permite gestionar recetas y sus ingredientes. A continuación, se detallan los endpoints disponibles:
+Esta API permite gestionar recetas y sus ingredientes. 
+Puedes acceder a ella a través de esta dirección:
+https://modulo-4-evaluacion-final-bpw-nanakuh.onrender.com/
+
+A continuación, se detallan los endpoints disponibles:
 
 ## Configuración
 
